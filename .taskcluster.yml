@@ -2,4 +2,46 @@ version: 1
 reporting: checks-v1
 policy:
   pullRequests: public
-tasks: {}
+tasks:
+  $match:
+    'true':
+      taskId:
+        $eval: as_slugid("?")
+      provisionerId: built-in
+      workerType: succeed
+      deadline: '${fromNow("1 day")}'
+      expires: '${fromNow("1 day")}'
+      payload: {}
+      metadata:
+        name: 'did-run'
+        description: 'check'
+        owner: '${event.sender.login}@users.noreply.github.com'
+        source: '${event.repository.url}'
+
+    'tasks_for in ["github-pull-request"]':
+      taskId:
+        $eval: as_slugid("pr_task")
+      provisionerId: taskgraph-t
+      workerType: linux
+      deadline: '${fromNow("1 day")}'
+      expires: '${fromNow("1 day")}'
+      payload:
+        artifacts:
+            public/github/customCheckRunText.md:
+                "path": "/root/repo/check.md"
+                "type": "file"
+        maxRunTime: 3600
+        image: node
+        command:
+          - /bin/bash
+          - '--login'
+          - '-c'
+          - >-
+            git clone ${event.pull_request.head.repo.html_url} repo && cd repo && git config
+            advice.detachedHead false && git checkout ${event.pull_request.head.sha}
+      metadata:
+        name: 'check'
+        description: 'check'
+        owner: '${event.sender.login}@users.noreply.github.com'
+        source: '${event.repository.url}'
+
