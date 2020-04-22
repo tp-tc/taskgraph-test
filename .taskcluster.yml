@@ -18,7 +18,7 @@ tasks:
         owner: '${event.sender.login}@users.noreply.github.com'
         source: '${event.repository.url}'
 
-    'tasks_for in ["github-pull-request"]':
+    'tasks_for in ["github-release"]':
       taskId:
         $eval: as_slugid("pr_task")
       provisionerId: taskgraph-t
