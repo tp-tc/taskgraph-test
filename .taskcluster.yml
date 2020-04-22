@@ -12,36 +12,10 @@ tasks:
       deadline: '${fromNow("1 day")}'
       expires: '${fromNow("1 day")}'
       payload: {}
+      extra:
+          event: {$eval: 'event'}
       metadata:
         name: 'did-run'
         description: 'check'
         owner: '${event.sender.login}@users.noreply.github.com'
         source: '${event.repository.url}'
-
-    'tasks_for in ["github-release"]':
-      taskId:
-        $eval: as_slugid("pr_task")
-      provisionerId: taskgraph-t
-      workerType: linux
-      deadline: '${fromNow("1 day")}'
-      expires: '${fromNow("1 day")}'
-      payload:
-        artifacts:
-            public/github/customCheckRunText.md:
-                "path": "/repo/check.md"
-                "type": "file"
-        maxRunTime: 3600
-        image: node
-        command:
-          - /bin/bash
-          - '--login'
-          - '-c'
-          - >-
-            git clone ${event.pull_request.head.repo.html_url} repo && cd repo && git config
-            advice.detachedHead false && git checkout ${event.pull_request.head.sha} && pwd
-      metadata:
-        name: 'check'
-        description: 'check'
-        owner: '${event.sender.login}@users.noreply.github.com'
-        source: '${event.repository.url}'
-
