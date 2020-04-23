@@ -1,0 +1,33 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+---
+
+loader: taskgraph.loader.transform:loader
+
+transforms:
+    - taskgraph.transforms.job:transforms
+    - taskgraph.transforms.task:transforms
+
+job-defaults:
+    attributes: {}
+    worker-type: t-linux
+    worker:
+        max-run-time: 3600
+
+jobs:
+    build:
+        description: "Build sdist/wheel."
+        worker:
+            docker-image: {in-tree: python3.8}
+            artifacts:
+                - name: public/dist
+                  type: directory
+                  path: /builds/worker/checkouts/src/dist
+            chain-of-trust: true
+        run:
+            using: run-task
+            cwd: '{checkout}'
+            use-caches: false
+            command: python setup.py sdist bdist_wheel
+

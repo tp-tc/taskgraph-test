@@ -6,6 +6,7 @@ taskgraph:
     repositories:
         releng:
             name: Redo
+    register: redo_taskgraph:register
 
 workers:
     aliases:
@@ -19,3 +20,11 @@ workers:
             implementation: docker-worker
             os: linux
             worker-type: linux
+        pypi:
+            provisioner: scriptworker-k8s
+            worker-type: releng-1-pypi-dev
+            os: scriptworker
+            implementation: scriptworker-pypi
+
+scriptworker:
+    scope-prefix: project:releng
