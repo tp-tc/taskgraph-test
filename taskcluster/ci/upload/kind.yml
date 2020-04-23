@@ -27,7 +27,7 @@ jobs:
                 - taskId: {task-reference: '<build>'}
                   taskType: build
                   paths: 
-                    - public/dist/redo-2.0.3-py2.py3-none-any.whl
-                    - public/dist/redo-2.0.3.tar.gz
+                    - public/dist/redo-2.0.3.post1-py2.py3-none-any.whl
+                    - public/dist/redo-2.0.3.post1.tar.gz
                   project: redo
 
